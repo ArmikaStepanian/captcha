@@ -1,0 +1,42 @@
+= *Captcha* microservice
+:toc: left
+:toclevels: 2
+:sectlinks:
+:toc-title: Table of contents
+
+== Microservice generates captcha image.
+
+=== 1. Call description. Call captcha image with *custom* value.
+
+==== Request parameters
+include::{snippets}/test-create-custom-captcha-image/request-parameters.adoc[]
+
+==== Call
+include::{snippets}/test-create-custom-captcha-image/curl-request.adoc[]
+
+==== Response
+image::custom.jpg[]
+
+=== 2. Call description. Call captcha image without required parameter _value_.
+
+==== Call
+include::{snippets}/test-create-custom-captcha-image-without-value/curl-request.adoc[]
+
+==== Response
+include::{snippets}/test-create-custom-captcha-image-without-value/http-response.adoc[]
+
+=== 3. Call description. Call captcha image with wrong length _value_.
+
+==== Call
+include::{snippets}/test-create-custom-captcha-image-wrong-length-value/curl-request.adoc[]
+
+==== Response
+include::{snippets}/test-create-custom-captcha-image-wrong-length-value/http-response.adoc[]
+
+=== 4. Call description. Call captcha image with *random* value (6 symbols length).
+
+==== Call
+include::{snippets}/test-create-random-captcha-image/curl-request.adoc[]
+
+==== Response
+image::random.jpg[]
