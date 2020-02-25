@@ -24,8 +24,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -55,13 +57,8 @@ public class CaptchaDocumentation {
 
 
     @BeforeAll
-    public static void createDirectory() {
-        File file = new File("target/generated-docs/images");
-        if (file.mkdirs()) {
-            log.info("Directory is created");
-        } else {
-            log.info("Directory is not created");
-        }
+    public static void createDirectory() throws IOException {
+        Files.createDirectories(Paths.get("target/generated-docs/images"));
     }
 
     @Test
@@ -77,7 +74,7 @@ public class CaptchaDocumentation {
         byte[] imageInByte = result.getResponse().getContentAsByteArray();
         try (InputStream in = new ByteArrayInputStream(imageInByte)) {
             BufferedImage bImageFromConvert = ImageIO.read(in);
-            ImageIO.write(bImageFromConvert, "jpg", new File("target/generated-docs/images/custom.jpg"));
+            ImageIO.write(bImageFromConvert, "jpg", Paths.get("target/generated-docs/images/custom.jpg").toFile());
         }
     }
 
@@ -93,7 +90,7 @@ public class CaptchaDocumentation {
         byte[] imageInByte = result.getResponse().getContentAsByteArray();
         try (InputStream in = new ByteArrayInputStream(imageInByte)) {
             BufferedImage bImageFromConvert = ImageIO.read(in);
-            ImageIO.write(bImageFromConvert, "jpg", new File("target/generated-docs/images/random.jpg"));
+            ImageIO.write(bImageFromConvert, "jpg", Paths.get("target/generated-docs/images/random.jpg").toFile());
         }
     }
 
