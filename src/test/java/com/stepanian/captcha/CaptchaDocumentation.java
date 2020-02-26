@@ -2,7 +2,6 @@ package com.stepanian.captcha;
 
 import com.github.cage.Cage;
 import com.stepanian.captcha.services.CreateCaptchaImageService;
-import com.stepanian.captcha.util.TextGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,8 +45,6 @@ public class CaptchaDocumentation {
     private CreateCaptchaImageService createCaptchaImageService;
     @InjectMocks
     private Cage cage;
-    @InjectMocks
-    private TextGenerator textGenerator;
     @Autowired
     private MockMvc mockMvc;
 
