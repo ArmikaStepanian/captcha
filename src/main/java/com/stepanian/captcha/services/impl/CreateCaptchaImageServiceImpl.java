@@ -20,6 +20,7 @@ public class CreateCaptchaImageServiceImpl implements CreateCaptchaImageService 
 
     @Override
     public byte[] getCaptcha() {
-        return cage.draw(textGenerator.generateHash());
+        String hash = textGenerator.generateHash();
+        return cage.draw(hash);
     }
 }
