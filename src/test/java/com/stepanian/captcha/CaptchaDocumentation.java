@@ -1,21 +1,19 @@
 package com.stepanian.captcha;
 
-import com.github.cage.Cage;
 import com.stepanian.captcha.services.CreateCaptchaImageService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -28,8 +26,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,16 +33,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureRestDocs("target/generated-snippets")
+@TestPropertySource(properties = {
+        "captcha.length=6",
+        "captcha.allowedChars=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+})
 @AutoConfigureMockMvc
 @Slf4j
 public class CaptchaDocumentation {
 
-    @MockBean
+    @Autowired
     private CreateCaptchaImageService createCaptchaImageService;
-    @InjectMocks
-    private Cage cage;
     @Autowired
     private MockMvc mockMvc;
+    @Value("${captcha.length}")
+    private int length;
+    @Value("${captcha.allowedChars}")
+    private String allowedChars;
 
     Snippet requestParameters = RequestDocumentation.requestParameters(
             parameterWithName("value")
@@ -61,8 +63,6 @@ public class CaptchaDocumentation {
     @Test
     public void testCreateCustomCaptchaImage() throws Exception {
         String value = "qwer12ty";
-        when(createCaptchaImageService.getCaptcha(any())).thenReturn(mockCaptchaImage(value));
-
         MvcResult result = mockMvc.perform(RestDocumentationRequestBuilders
                 .get("http://localhost:8080/api/getImage?value={value}", value))
                 .andExpect(status().isOk())
@@ -77,8 +77,6 @@ public class CaptchaDocumentation {
 
     @Test
     public void testCreateRandomCaptchaImage() throws Exception {
-        when(createCaptchaImageService.getCaptcha()).thenReturn(mockCaptchaImage());
-
         MvcResult result = mockMvc.perform(RestDocumentationRequestBuilders
                 .get("http://localhost:8080/api/getImage/generateValue"))
                 .andExpect(status().isOk())
@@ -106,14 +104,5 @@ public class CaptchaDocumentation {
                 .get("http://localhost:8080/api/getImage?value={value}", value))
                 .andExpect(status().isBadRequest())
                 .andDo(document("{method-name}"));
-    }
-
-
-    private byte[] mockCaptchaImage(String value) {
-        return cage.draw(value);
-    }
-
-    private byte[] mockCaptchaImage() {
-        return cage.draw(RandomStringUtils.random(6, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
     }
 }
