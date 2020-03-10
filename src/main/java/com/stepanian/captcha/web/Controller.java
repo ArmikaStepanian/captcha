@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class Controller {
@@ -29,5 +31,16 @@ public class Controller {
     public @ResponseBody
     byte[] getCaptcha() {
         return createCaptchaImageService.getCaptcha();
+    }
+
+    @RequestMapping(value = "/api/getImage/resizable", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody
+    byte[] getCaptcha(@RequestParam String value,
+                      @RequestParam(required = false) Integer width,
+                      @RequestParam(required = false) Integer height) throws IOException, IncorrectLengthException {
+        if (value.length() < 4 || value.length() > 8) {
+            throw new IncorrectLengthException("Value: size must be between 4 and 8");
+        }
+        return createCaptchaImageService.getCaptcha(value, width, height);
     }
 }
