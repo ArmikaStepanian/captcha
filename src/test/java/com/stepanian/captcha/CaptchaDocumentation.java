@@ -54,6 +54,15 @@ public class CaptchaDocumentation {
             parameterWithName("value")
                     .description("Any string 4-8 symbols length. Parameter is required."));
 
+    Snippet parametersForResizableImage = RequestDocumentation.requestParameters(
+            parameterWithName("value")
+                    .description("Any string 4-8 symbols length. Parameter is required."),
+            parameterWithName("width")
+                    .description("Image width. Parameter is not required. Default value = 180."),
+            parameterWithName("height")
+                    .description("Image height. Parameter is not required. Default value = 50.")
+    );
+
 
     @BeforeAll
     public static void createDirectory() throws IOException {
@@ -86,6 +95,22 @@ public class CaptchaDocumentation {
         try (InputStream in = new ByteArrayInputStream(imageInByte)) {
             BufferedImage bImageFromConvert = ImageIO.read(in);
             ImageIO.write(bImageFromConvert, "jpg", Paths.get("target/generated-docs/images/random.jpg").toFile());
+        }
+    }
+
+    @Test
+    public void testCreateResizableCaptchaImage() throws Exception {
+        String value = "12F59";
+        MvcResult result = mockMvc.perform(RestDocumentationRequestBuilders
+                .get("http://localhost:8080/api/getImage/resizable?value={value}&width={width}&height={height}",
+                        value, 120, 30))
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}", parametersForResizableImage))
+                .andReturn();
+        byte[] imageInByte = result.getResponse().getContentAsByteArray();
+        try (InputStream in = new ByteArrayInputStream(imageInByte)) {
+            BufferedImage bImageFromConvert = ImageIO.read(in);
+            ImageIO.write(bImageFromConvert, "jpg", Paths.get("target/generated-docs/images/resizable.jpg").toFile());
         }
     }
 

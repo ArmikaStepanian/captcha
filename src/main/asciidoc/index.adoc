@@ -40,3 +40,14 @@ include::{snippets}/test-create-random-captcha-image/curl-request.adoc[]
 
 ==== Response
 image::random.jpg[]
+
+=== 1. Call description. Call captcha image with *custom* value, *resizable*.
+
+==== Request parameters
+include::{snippets}/test-create-resizable-captcha-image/request-parameters.adoc[]
+
+==== Call
+include::{snippets}/test-create-resizable-captcha-image/curl-request.adoc[]
+
+==== Response
+image::resizable.jpg[]
