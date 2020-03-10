@@ -16,7 +16,11 @@ import javax.validation.constraints.NotNull;
 public class ApplicationProperties {
 
     @NotNull
-    private int length;
+    private int valueLength;
     @NotNull
     private String allowedChars;
+    @NotNull
+    private int width;
+    @NotNull
+    private int height;
 }
