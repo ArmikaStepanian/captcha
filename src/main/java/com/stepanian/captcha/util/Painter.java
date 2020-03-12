@@ -20,7 +20,7 @@ public class Painter {
     private Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
 
     public byte[] draw(String value, int width, int height) throws IOException {
-
+        float fontSize = (float) (height / 2.5);
         int padding = width / (value.length() == 0 ? 1 : value.length());
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
@@ -31,7 +31,7 @@ public class Painter {
         for (int i = 0; i < value.length(); i++) {
             int x = (i * padding) + padding / 2;
             int y = height / 2 + new Random().nextInt(height / 4);
-            drawLetter(graphics2D, chooseRandomFont(fonts), fontColor, value.substring(i, i + 1), x, y);
+            drawLetter(graphics2D, chooseRandomFont(fonts), fontColor, fontSize, value.substring(i, i + 1), x, y);
         }
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
@@ -40,8 +40,8 @@ public class Painter {
         }
     }
 
-    private void drawLetter(Graphics graphics2D, Font font, Color fontColor, String letter, int x, int y) {
-        font = font.deriveFont(20f);
+    private void drawLetter(Graphics graphics2D, Font font, Color fontColor, float fontSize, String letter, int x, int y) {
+        font = font.deriveFont(fontSize);
         graphics2D.setFont(font);
         graphics2D.setColor(fontColor);
         graphics2D.drawString(letter, x, y);
